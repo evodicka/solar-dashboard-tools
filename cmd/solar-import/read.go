@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-type readFunc func(filepath string, records [][]string)
+type readFunc func(filepath string, records [][]string, dryRun bool)
 
-func readFilesInDir(startPath string, r readFunc) error {
+func readFilesInDir(startPath string, r readFunc, dryRun bool) error {
 	err := filepath.WalkDir(startPath, func(path string, d fs.DirEntry, err error) error {
 		if !d.IsDir() && strings.HasSuffix(d.Name(), ".csv") {
 			records := readCsv(path)
-			r(path, records)
+			r(path, records, dryRun)
 		}
 		return err
 	})

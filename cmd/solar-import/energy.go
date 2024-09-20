@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-func importEnergyData(path string) error {
-	err := readFilesInDir(path, handleEnergyCsvContent)
+func importEnergyData(path string, dryRun bool) error {
+	err := readFilesInDir(path, handleEnergyCsvContent, dryRun)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func handleEnergyCsvContent(filepath string, records [][]string) {
+func handleEnergyCsvContent(filepath string, records [][]string, dryRun bool) {
 	_, file := filepath2.Split(filepath)
 	before, _ := strings.CutSuffix(file, ".csv")
 	split := strings.Split(before, "-")
@@ -32,8 +32,9 @@ func handleEnergyCsvContent(filepath string, records [][]string) {
 		logError(err, "Invalid number")
 
 		parsedTime := time.Date(year, time.Month(month), day, 23, 0, 0, 0, location)
-
 		log.Println("Writing energy data for: ", parsedTime)
-		writeValue("Kostal_Inverter_Yield_Day", parsedTime, energy/1000)
+		if !dryRun {
+			writeValue("Kostal_Inverter_Yield_Day", parsedTime, energy/1000)
+		}
 	}
 }

@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-func importPowerData(path string) error {
+func importPowerData(path string, dryRun bool) error {
 
-	err := readFilesInDir(path, handlePowerCsvContent)
+	err := readFilesInDir(path, handlePowerCsvContent, dryRun)
 	if err != nil {
 		return err
 	}
@@ -16,7 +16,7 @@ func importPowerData(path string) error {
 
 }
 
-func handlePowerCsvContent(_ string, records [][]string) {
+func handlePowerCsvContent(_ string, records [][]string, dryRun bool) {
 	for _, line := range records {
 		timeString := line[0]
 		stringOnePower, err := strconv.ParseFloat(line[4], 64)
